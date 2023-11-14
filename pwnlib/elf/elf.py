@@ -917,7 +917,13 @@ class ELF(ELFFile):
             self.symbols['got.' + symbol] = address
 
     def _populate_got(self):
-        """Loads the symbols for all relocations"""
+        """Loads the symbols for all relocations.
+
+            >>> libc = ELF(which('bash')).libc
+            >>> assert 'strchrnul' in libc.got
+            >>> assert 'memcpy' in libc.got
+            >>> assert libc.got.strchrnul != libc.got.memcpy
+        """
         # Statically linked implies no relocations, since there is no linker
         # Could always be self-relocating like Android's linker *shrug*
         if self.statically_linked:
